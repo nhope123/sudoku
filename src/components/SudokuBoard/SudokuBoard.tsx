@@ -1,53 +1,36 @@
 import { Box, SxProps, Theme, Typography } from "@mui/material";
-import { FC, useContext, useMemo } from "react";
+import { FC, useContext } from "react";
 import { SudokuContext } from "../../context/SudokuContext";
-import SudokuBox from "../SudokuBox/SudokuBox";
+import SudokuCell from "../SudokuCell/SudokuCell";
+import InputOptions from "../InputOptions/InputOptions";
 
 const containerSx: SxProps<Theme> = {
-  display: "flex",
-  flexDirection: "column",
-  rowGap: 2,
-};
-
-const rowSx: SxProps<Theme> = {
-  display: "flex",
-  columnGap: 2,
+  display: "grid",
+  gridTemplateColumns: "repeat(9, 1fr)",
+  maxWidth: '900px',
+  width: "95vw",
+  maxHeight: '900px',
+  height: "95vw",
 };
 
 const SudokuBoard: FC = () => {
-  const { selectedCell } = useContext(SudokuContext);
+  const { selectedCell, sudokuBoard } = useContext(SudokuContext);
 
-  const selection = useMemo(
-    () =>
-      {
-        console.log('selectedRow: ', selectedCell?.row, 'selectedColumn: ', selectedCell?.column, 'selectedCell: ', selectedCell);
-        
-        return selectedCell?.row || selectedCell?.column
-        ? `Selected Cell: ${selectedCell.row}, ${selectedCell.column}`
-        : "No cell selected"
-      },
-    [selectedCell?.row, selectedCell?.column]
-  );
-
-  // console.log("Selected Cell => board: ", selectedCell);
   
-  // console.log("Selection: ", selection);
 
   return (
     <>
       <h1> Sudoku Board </h1>
       <Typography variant="body1" gutterBottom>
-        {selection}
+        {selectedCell ?? "No cell selected"}
       </Typography>
       <Box sx={containerSx}>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Box key={`row-${i}`} sx={rowSx}>
-            {Array.from({ length: 3 }).map((_, j) => (
-              <SudokuBox key={`box-${i + j}`} value={{ row: i, column: j }} />
-            ))}
-          </Box>
-        ))}
+        {sudokuBoard.map((cell, i) => (
+          <SudokuCell key={i} value={cell} position={i} />
+        ))
+        }
       </Box>
+      <InputOptions />
     </>
   );
 };
