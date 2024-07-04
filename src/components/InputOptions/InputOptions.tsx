@@ -11,17 +11,16 @@ const containerSx: SxProps<Theme> = {
 };
 
 const InputOptions = () => {
-  // const { } = props;
 
-  const { setInputValue} = useContext(SudokuContext);
+  const { selectedCell, setInputValue} = useContext(SudokuContext);
 
   const options = useMemo(() => {
     return Array.from({ length: 9 }, (_, i) => i + 1);
   }, []);
 
   const _handleClick = useCallback((value: number) => {
-    setInputValue?.(value);
-  }, []);
+    setInputValue?.(value, selectedCell);
+  }, [selectedCell]);
 
   return (
     <Box sx={containerSx}>

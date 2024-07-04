@@ -3,61 +3,45 @@ import React, { useCallback, useContext, useMemo } from "react";
 import { SudokuContext } from "../../context/SudokuContext";
 
 interface SudokuCellProps {
-  value: number;
   position: number;
 }
 
-const SudokuCell: React.FC<SudokuCellProps> = ({ value, position }) => {
-  const { selectedCell, setSelectedCell, hiddenCells, inputValue, setInputValue, setHiddenCells } = useContext(SudokuContext);
+const SudokuCell: React.FC<SudokuCellProps> = ({ position }) => {
+  const { getCellValue, getCellError, inputValue, selectedCell, setSelectedCell } = useContext(SudokuContext);
 
   const _handleClick = useCallback(() => {
     setSelectedCell?.(position);
+
   }, [position, setSelectedCell]);
 
+ 
 
+const {cellError, cellValue} = useMemo(() => {
 
-const inputError = useMemo(() => {
-  const isCellHidden = hiddenCells.includes(position); 
+  return {cellError: getCellError?.(position), cellValue: getCellValue?.(position) ?? ''};
   
-  if (inputValue) console.log('inputValue: ', inputValue);
+ 
+}, [position, selectedCell, inputValue ]);
 
-  if (isCellHidden && inputValue) {
-    console.log('position: ', position);
-  }
-  if (isCellHidden && selectedCell === position && inputValue) {
-    if (value !== inputValue) {
-      setSelectedCell?.(undefined);
-      // setInputValue?.(undefined);
-      setHiddenCells?.(hiddenCells.filter(cell => cell !== position));
 
-    
 
-      return inputValue;
-    }
-    
-    return undefined;
-
-  }
-}, [ hiddenCells, inputValue, position, selectedCell, setHiddenCells, setSelectedCell, value]);  
-
-const cellValue = useMemo(() => {
-  const isCellHidden = hiddenCells.includes(position);  
-
-  if (inputError) return inputError;
-
-  return isCellHidden ? "" : value;
-}, [hiddenCells, position, value]);
-
-if (inputValue)
-   console.log('inputValue cell: ', inputValue);
-
-  return <Button color="primary" disabled={cellValue !== ''} onClick={_handleClick} sx={{
-    border: `1px solid ${inputError ? 'red' : 'white'}`,
-    color: inputError ? 'red' : 'white',
-    '&:disabled': {
-      color: "white",
-    },
-  }}>{inputError ?? cellValue}</Button>;
+  return (
+    <Button 
+      color="primary" 
+      disabled={cellValue !== '' && !cellError} 
+      onClick={_handleClick} 
+      sx={{
+        border: `1px ${selectedCell === position ? 'inset' :  'solid'} ${cellError ? 'red' : 'white'}`, 
+        color: `${cellError ? 'red' : 'white'}`, // 'white', 
+        backgroundColor: selectedCell === position ? 'primary.main' : 'inherit',
+        '&:disabled': {
+          color: "white",
+        },
+      }}
+      >
+        {cellError ?? cellValue}
+      </Button>
+    );
 };
 
 export default SudokuCell;

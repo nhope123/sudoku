@@ -1,8 +1,8 @@
 import { Box, SxProps, Theme, Typography } from "@mui/material";
 import { FC, useContext } from "react";
 import { SudokuContext } from "../../context/SudokuContext";
-import SudokuCell from "../SudokuCell/SudokuCell";
 import InputOptions from "../InputOptions/InputOptions";
+import SudokuCell from "../SudokuCell/SudokuCell";
 
 const containerSx: SxProps<Theme> = {
   display: "grid",
@@ -11,12 +11,11 @@ const containerSx: SxProps<Theme> = {
   width: "95vw",
   maxHeight: '900px',
   height: "95vw",
+  gap: 0.5,
 };
 
 const SudokuBoard: FC = () => {
-  const { selectedCell, sudokuBoard } = useContext(SudokuContext);
-
-  
+  const { selectedCell } = useContext(SudokuContext);  
 
   return (
     <>
@@ -25,9 +24,9 @@ const SudokuBoard: FC = () => {
         {selectedCell ?? "No cell selected"}
       </Typography>
       <Box sx={containerSx}>
-        {sudokuBoard.map((cell, i) => (
-          <SudokuCell key={i} value={cell} position={i} />
-        ))
+        { Array.from({ length: 81 }, (_, i) => (
+          <SudokuCell key={i} position={i} /> 
+          ))
         }
       </Box>
       <InputOptions />
